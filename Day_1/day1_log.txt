@@ -1,0 +1,60 @@
+Reading: {'temperature': 59.57, 'pressure': 21.44, 'vibration': 1.39, 'current': 19.48} | Rule: NO_RULE_FIRED | Action: CONTINUE_NORMAL
+Reading: {'temperature': 73.84, 'pressure': 35.35, 'vibration': 1.25, 'current': 23.36} | Rule: HIGH_CURRENT | Action: CHECK_MOTOR
+Reading: {'temperature': 84.21, 'pressure': 46.15, 'vibration': 0.37, 'current': 10.55} | Rule: HIGH_TEMP | Action: STOP_MACHINE
+Reading: {'temperature': 90.29, 'pressure': 47.03, 'vibration': 1.99, 'current': 19.23} | Rule: HIGH_TEMP | Action: STOP_MACHINE
+Reading: {'temperature': 82.54, 'pressure': 37.4, 'vibration': 1.38, 'current': 22.45} | Rule: HIGH_TEMP | Action: STOP_MACHINE
+Reading: {'temperature': 61.16, 'pressure': 40.61, 'vibration': 0.28, 'current': 24.12} | Rule: HIGH_CURRENT | Action: CHECK_MOTOR
+Reading: {'temperature': 91.12, 'pressure': 22.75, 'vibration': 0.84, 'current': 15.61} | Rule: HIGH_TEMP | Action: STOP_MACHINE
+Reading: {'temperature': 56.8, 'pressure': 55.97, 'vibration': 1.46, 'current': 17.75} | Rule: HIGH_PRESSURE | Action: REDUCE_PRESSURE
+Reading: {'temperature': 59.41, 'pressure': 50.33, 'vibration': 0.35, 'current': 7.62} | Rule: HIGH_PRESSURE | Action: REDUCE_PRESSURE
+Reading: {'temperature': 86.09, 'pressure': 31.19, 'vibration': 1.21, 'current': 18.84} | Rule: HIGH_TEMP | Action: STOP_MACHINE
+2026-10-10 16:07:43 | Reading={'temperature': 57.35, 'pressure': 38.17, 'vibration': 1.07, 'current': 17.8} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:07:43 | Reading={'temperature': 60.58, 'pressure': 41.97, 'vibration': 1.39, 'current': 15.18} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:07:44 | Reading={'temperature': 70.6, 'pressure': 42.43, 'vibration': 1.21, 'current': 10.38} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:07:44 | Reading={'temperature': 79.96, 'pressure': 54.46, 'vibration': 0.36, 'current': 20.55} | Matched=['HIGH_PRESSURE', 'HIGH_CURRENT'] | Most Severe=HIGH_PRESSURE | Severity=MEDIUM | Action=REDUCE_PRESSURE
+2026-10-10 16:07:44 | Reading={'temperature': 67.54, 'pressure': 57.64, 'vibration': 0.77, 'current': 13.87} | Matched=['HIGH_PRESSURE'] | Most Severe=HIGH_PRESSURE | Severity=MEDIUM | Action=REDUCE_PRESSURE
+2026-10-10 16:07:44 | Reading={'temperature': 89.54, 'pressure': 35.19, 'vibration': 0.76, 'current': 19.09} | Matched=['HIGH_TEMP'] | Most Severe=HIGH_TEMP | Severity=HIGH | Action=STOP_MACHINE
+2026-10-10 16:07:44 | Reading={'temperature': 73.54, 'pressure': 54.08, 'vibration': 1.17, 'current': 18.95} | Matched=['HIGH_PRESSURE'] | Most Severe=HIGH_PRESSURE | Severity=MEDIUM | Action=REDUCE_PRESSURE
+2026-10-10 16:07:45 | Reading={'temperature': 66.04, 'pressure': 48.21, 'vibration': 0.58, 'current': 8.88} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:07:45 | Reading={'temperature': 60.38, 'pressure': 26.48, 'vibration': 1.21, 'current': 18.37} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:07:45 | Reading={'temperature': 75.18, 'pressure': 32.35, 'vibration': 0.79, 'current': 10.4} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:11:20 | Reading={'temperature': 71.72, 'pressure': 38.62, 'vibration': 0.14, 'current': 22.67} | Matched=['HIGH_CURRENT'] | Most Severe=HIGH_CURRENT | Severity=MEDIUM | Action=CHECK_MOTOR
+2026-10-10 16:11:20 | Reading={'temperature': 78.28, 'pressure': 34.11, 'vibration': 1.7, 'current': 14.99} | Matched=['HIGH_VIBRATION'] | Most Severe=HIGH_VIBRATION | Severity=HIGH | Action=CHECK_MACHINE
+2026-10-10 16:11:21 | Reading={'temperature': 76.53, 'pressure': 27.46, 'vibration': 1.36, 'current': 22.45} | Matched=['HIGH_CURRENT'] | Most Severe=HIGH_CURRENT | Severity=MEDIUM | Action=CHECK_MOTOR
+2026-10-10 16:11:21 | Reading={'temperature': 61.34, 'pressure': 27.77, 'vibration': 0.97, 'current': 18.43} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:11:21 | Reading={'temperature': 51.17, 'pressure': 35.03, 'vibration': 0.4, 'current': 14.79} | Matched=[] | Most Severe=NO_RULE_FIRED | Severity=NORMAL | Action=CONTINUE_NORMAL
+2026-10-10 16:11:21 | Reading={'temperature': 84.94, 'pressure': 49.42, 'vibration': 1.0, 'current': 9.51} | Matched=['HIGH_TEMP'] | Most Severe=HIGH_TEMP | Severity=HIGH | Action=STOP_MACHINE
+2026-10-10 16:11:21 | Reading={'temperature': 51.62, 'pressure': 55.3, 'vibration': 1.89, 'current': 6.34} | Matched=['HIGH_VIBRATION', 'HIGH_PRESSURE'] | Most Severe=HIGH_VIBRATION | Severity=HIGH | Action=CHECK_MACHINE
+2026-10-10 16:11:22 | Reading={'temperature': 92.49, 'pressure': 32.57, 'vibration': 1.6, 'current': 7.14} | Matched=['CRITICAL_TEMP', 'HIGH_TEMP', 'HIGH_VIBRATION'] | Most Severe=CRITICAL_TEMP | Severity=CRITICAL | Action=EMERGENCY_STOP
+2026-10-10 16:11:22 | Reading={'temperature': 80.28, 'pressure': 35.2, 'vibration': 0.5, 'current': 21.04} | Matched=['HIGH_TEMP', 'HIGH_CURRENT'] | Most Severe=HIGH_TEMP | Severity=HIGH | Action=STOP_MACHINE
+2026-10-10 16:11:22 | Reading={'temperature': 67.47, 'pressure': 41.53, 'vibration': 1.77, 'current': 24.35} | Matched=['HIGH_VIBRATION', 'HIGH_CURRENT'] | Most Severe=HIGH_VIBRATION | Severity=HIGH | Action=CHECK_MACHINE
+Tick 1 | Data: {'temperature': 96, 'pressure': 35, 'vibration': 1.29, 'current': 24} | Severity: CRITICAL | Action: EMERGENCY STOP
+Tick 2 | Data: {'temperature': 71, 'pressure': 32, 'vibration': 0.97, 'current': 10} | Severity: NORMAL | Action: CONTINUE NORMAL
+Tick 3 | Data: {'temperature': 97, 'pressure': 41, 'vibration': 1.56, 'current': 13} | Severity: CRITICAL | Action: EMERGENCY STOP
+Tick 4 | Data: {'temperature': 74, 'pressure': 55, 'vibration': 0.19, 'current': 23} | Severity: MEDIUM | Action: REDUCE PRESSURE
+Tick 5 | Data: {'temperature': 54, 'pressure': 32, 'vibration': 1.6, 'current': 16} | Severity: HIGH | Action: CHECK MACHINE
+Tick 6 | Data: {'temperature': 50, 'pressure': 32, 'vibration': 0.13, 'current': 18} | Severity: NORMAL | Action: CONTINUE NORMAL
+Tick 7 | Data: {'temperature': 63, 'pressure': 51, 'vibration': 1.3, 'current': 9} | Severity: MEDIUM | Action: REDUCE PRESSURE
+Tick 8 | Data: {'temperature': 70, 'pressure': 34, 'vibration': 1.05, 'current': 9} | Severity: NORMAL | Action: CONTINUE NORMAL
+Tick 9 | Data: {'temperature': 90, 'pressure': 40, 'vibration': 1.2, 'current': 25} | Severity: HIGH | Action: STOP MACHINE
+Tick 10 | Data: {'temperature': 60, 'pressure': 49, 'vibration': 1.23, 'current': 14} | Severity: NORMAL | Action: CONTINUE NORMAL
+Tick 1 | Data: {'temperature': 98, 'pressure': 55, 'vibration': 0.17, 'current': 22} | Severity: CRITICAL | Action: EMERGENCY STOP
+Tick 2 | Data: {'temperature': 81, 'pressure': 52, 'vibration': 1.86, 'current': 17} | Severity: HIGH | Action: STOP MACHINE
+Tick 3 | Data: {'temperature': 83, 'pressure': 29, 'vibration': 0.15, 'current': 24} | Severity: HIGH | Action: STOP MACHINE
+Tick 4 | Data: {'temperature': 67, 'pressure': 29, 'vibration': 1.3, 'current': 24} | Severity: MEDIUM | Action: CHECK MOTOR
+Tick 5 | Data: {'temperature': 79, 'pressure': 55, 'vibration': 1.11, 'current': 16} | Severity: MEDIUM | Action: REDUCE PRESSURE
+Tick 6 | Data: {'temperature': 87, 'pressure': 43, 'vibration': 1.0, 'current': 19} | Severity: HIGH | Action: STOP MACHINE
+Tick 7 | Data: {'temperature': 57, 'pressure': 56, 'vibration': 0.31, 'current': 15} | Severity: MEDIUM | Action: REDUCE PRESSURE
+Tick 8 | Data: {'temperature': 95, 'pressure': 45, 'vibration': 1.36, 'current': 16} | Severity: CRITICAL | Action: EMERGENCY STOP
+Tick 9 | Data: {'temperature': 70, 'pressure': 27, 'vibration': 1.19, 'current': 8} | Severity: NORMAL | Action: CONTINUE NORMAL
+Tick 10 | Data: {'temperature': 68, 'pressure': 51, 'vibration': 0.2, 'current': 12} | Severity: MEDIUM | Action: REDUCE PRESSURE
+Machine 1 | Reading={'temperature': 56.16, 'pressure': 33.16, 'vibration': 0.43, 'current': 20.78} | Problem=HIGH_CURRENT | Severity=2 | Action=CHECK_MOTOR
+Machine 2 | Reading={'temperature': 86.83, 'pressure': 37.39, 'vibration': 1.61, 'current': 24.19} | Problem=HIGH_TEMP | Severity=3 | Action=STOP_MACHINE
+Machine 3 | Reading={'temperature': 82.47, 'pressure': 41.14, 'vibration': 1.26, 'current': 22.5} | Problem=HIGH_TEMP | Severity=3 | Action=STOP_MACHINE
+Machine 4 | Reading={'temperature': 87.4, 'pressure': 24.09, 'vibration': 0.9, 'current': 6.17} | Problem=HIGH_TEMP | Severity=3 | Action=STOP_MACHINE
+Machine 5 | Reading={'temperature': 60.83, 'pressure': 39.76, 'vibration': 0.17, 'current': 8.33} | Problem=NO_RULE_FIRED | Severity=0 | Action=CONTINUE_NORMAL
+Machine 1 | Reading={'temperature': 72.05, 'pressure': 44.96, 'vibration': 0.25, 'current': 16.47} | Problem=NO_RULE_FIRED | Severity=0 | Action=CONTINUE_NORMAL
+Machine 2 | Reading={'temperature': 62.93, 'pressure': 36.34, 'vibration': 1.4, 'current': 21.8} | Problem=HIGH_CURRENT | Severity=2 | Action=CHECK_MOTOR
+Machine 3 | Reading={'temperature': 69.23, 'pressure': 45.62, 'vibration': 0.57, 'current': 21.31} | Problem=HIGH_CURRENT | Severity=2 | Action=CHECK_MOTOR
+Machine 4 | Reading={'temperature': 57.13, 'pressure': 21.43, 'vibration': 0.52, 'current': 21.92} | Problem=HIGH_CURRENT | Severity=2 | Action=CHECK_MOTOR
+Machine 5 | Reading={'temperature': 64.83, 'pressure': 28.59, 'vibration': 0.35, 'current': 21.7} | Problem=HIGH_CURRENT | Severity=2 | Action=CHECK_MOTOR
