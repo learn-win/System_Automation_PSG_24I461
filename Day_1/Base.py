@@ -6,7 +6,7 @@ LOG_FILE = "day1_log.txt"
 
 # STEP 1 — Generate simulated sensor data
 def generate_sensor_data():
-    """Return simulated temperature, pressure, vibration, and current."""
+    """Return simulated machine state and sensor readings."""
     return {
         "temperature": round(random.uniform(50, 95), 2),
         "pressure": round(random.uniform(20, 60), 2),
