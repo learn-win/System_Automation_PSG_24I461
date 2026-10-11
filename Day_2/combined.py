@@ -1,12 +1,14 @@
 
 from pathlib import Path
 from datetime import datetime
-import random
-import time
 
 import numpy as np
 import pandas as pd
 import joblib
+
+# Prevent Tkinter GUI cleanup errors
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
@@ -15,7 +17,7 @@ from sklearn.metrics import (
     accuracy_score,
     classification_report,
     confusion_matrix,
-    ConfusionMatrixDisplay,
+    ConfusionMatrixDisplay
 )
 
 
@@ -28,6 +30,7 @@ DATA_FILE = BASE_DIR / "data" / "day2_sample.csv"
 
 MODEL_FILE = BASE_DIR / "random_forest_model.pkl"
 LOG_FILE = BASE_DIR / "combined_machine_log.txt"
+
 CM_IMAGE = BASE_DIR / "random_forest_confusion_matrix.png"
 IMPORTANCE_IMAGE = BASE_DIR / "feature_importance.png"
 
@@ -36,14 +39,10 @@ FEATURE_NAMES = [
     "pressure",
     "vibration",
     "current",
-    "rpm",
+    "rpm"
 ]
 
 TARGET_COLUMN = "state"
-
-# Set to True to generate five simulated machines.
-# Set to False to enter sensor values manually.
-SIMULATE_MACHINES = True
 
 NUMBER_OF_MACHINES = 5
 
@@ -58,59 +57,59 @@ RULES = [
         "priority": 1,
         "condition": lambda r: r["temperature"] > 80,
         "action": "STOP_MACHINE",
-        "severity": 3,
+        "severity": 3
     },
     {
         "name": "HIGH_VIBRATION",
         "priority": 2,
         "condition": lambda r: r["vibration"] > 5.0,
         "action": "CHECK_MACHINE",
-        "severity": 2,
+        "severity": 2
     },
     {
         "name": "MOTOR_OVERLOAD",
         "priority": 3,
         "condition": lambda r: r["current"] > 18,
         "action": "CHECK_MOTOR",
-        "severity": 2,
+        "severity": 2
     },
     {
         "name": "HIGH_PRESSURE",
         "priority": 4,
         "condition": lambda r: r["pressure"] > 5.8,
         "action": "REDUCE_PRESSURE",
-        "severity": 2,
-    },
+        "severity": 2
+    }
 ]
 
 ACTION_MESSAGES = {
     "STOP_MACHINE":
         "Stop the machine safely and inspect temperature.",
     "CHECK_MACHINE":
-        "Inspect vibration, mounting, bearings and alignment.",
+        "Inspect vibration, bearings and alignment.",
     "CHECK_MOTOR":
         "Inspect motor current and possible overload.",
     "REDUCE_PRESSURE":
-        "Check pressure limits and pressure-control equipment.",
+        "Check pressure limits and control equipment.",
     "CONTINUE_NORMAL":
-        "No rule-based fault detected; continue monitoring.",
+        "No rule-based fault detected; continue monitoring."
 }
 
 
 # ==========================================================
-# STEP 3: LOAD AND CLEAN DATA
+# STEP 3: LOAD AND CLEAN CSV
 # ==========================================================
 
 def load_data():
 
     if not DATA_FILE.exists():
         raise FileNotFoundError(
-            f"Dataset not found: {DATA_FILE}"
+            f"CSV file not found: {DATA_FILE}"
         )
 
     data = pd.read_csv(
         DATA_FILE,
-        encoding="utf-8-sig",
+        encoding="utf-8-sig"
     )
 
     data.columns = (
@@ -119,22 +118,21 @@ def load_data():
         .str.lower()
     )
 
-    expected = FEATURE_NAMES + [TARGET_COLUMN]
+    required = FEATURE_NAMES + [TARGET_COLUMN]
 
     missing = [
-        column for column in expected
-        if column not in data.columns
+        col for col in required
+        if col not in data.columns
     ]
 
     if missing:
         raise ValueError(
-            f"Missing CSV columns: {missing}\n"
-            f"Available columns: {data.columns.tolist()}"
+            f"Missing CSV columns: {missing}"
         )
 
     X = data[FEATURE_NAMES].apply(
         pd.to_numeric,
-        errors="coerce",
+        errors="coerce"
     )
 
     y = (
@@ -145,41 +143,29 @@ def load_data():
     )
 
     valid = (
-        pd.Series(
-            np.isfinite(X.to_numpy(dtype=float)).all(axis=1),
-            index=X.index,
-        )
-        & y.notna()
-        & y.ne("")
+        np.isfinite(X.to_numpy(dtype=float)).all(axis=1)
+        & y.notna().to_numpy()
+        & y.ne("").to_numpy()
     )
 
-    X = X.loc[valid].copy()
-    y = y.loc[valid].copy()
-
-    print("=" * 65)
-    print("DATASET INFORMATION")
-    print("=" * 65)
-
-    print("Total rows:", len(data))
-    print("Valid rows:", len(X))
-    print("Invalid rows:", int((~valid).sum()))
-
-    print("\nMachine condition distribution:")
-    print(y.value_counts().to_string())
+    X = X.loc[valid].reset_index(drop=True)
+    y = y.loc[valid].reset_index(drop=True)
 
     if X.empty:
-        raise ValueError("No valid dataset rows found.")
+        raise ValueError("No valid sensor records found.")
 
     if y.nunique() < 2:
         raise ValueError(
-            "At least two machine condition classes are required."
+            "At least two state classes are required for training."
         )
 
-    if y.value_counts().min() < 2:
-        raise ValueError(
-            "Every class needs at least two samples. "
-            "Collect more examples for rare conditions."
-        )
+    print("=" * 60)
+    print("DAY 2 CSV INFORMATION")
+    print("=" * 60)
+
+    print("Valid records:", len(X))
+    print("\nState distribution:")
+    print(y.value_counts().to_string())
 
     return X, y
 
@@ -190,14 +176,6 @@ def load_data():
 
 def train_model(X, y):
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.20,
-        random_state=42,
-        stratify=y,
-    )
-
     model = RandomForestClassifier(
         n_estimators=200,
         max_depth=10,
@@ -206,128 +184,184 @@ def train_model(X, y):
         max_features="sqrt",
         class_weight="balanced",
         random_state=42,
-        n_jobs=-1,
+        n_jobs=-1
     )
 
-    model.fit(X_train, y_train)
+    counts = y.value_counts()
 
-    train_accuracy = accuracy_score(
-        y_train, model.predict(X_train)
+    can_stratify = (
+        counts.min() >= 2
+        and int(np.ceil(len(X) * 0.20)) >= y.nunique()
+        and int(np.floor(len(X) * 0.80)) >= y.nunique()
     )
 
-    test_predictions = model.predict(X_test)
+    if can_stratify:
 
-    test_accuracy = accuracy_score(
-        y_test, test_predictions
-    )
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=0.20,
+            random_state=42,
+            stratify=y
+        )
 
-    print("\n" + "=" * 65)
-    print("RANDOM FOREST TRAINING")
-    print("=" * 65)
+        model.fit(X_train, y_train)
 
-    print("Training samples:", len(X_train))
-    print("Testing samples:", len(X_test))
-    print("Number of trees:", model.n_estimators)
-    print(f"Training accuracy: {train_accuracy * 100:.2f}%")
-    print(f"Test accuracy: {test_accuracy * 100:.2f}%")
+        predictions = model.predict(X_test)
 
-    print("\nClassification report:")
-    print(
-        classification_report(
+        print("\nRANDOM FOREST EVALUATION")
+        print("Training samples:", len(X_train))
+        print("Testing samples:", len(X_test))
+        print(
+            "Training accuracy:",
+            f"{accuracy_score(y_train, model.predict(X_train)):.2%}"
+        )
+        print(
+            "Test accuracy:",
+            f"{accuracy_score(y_test, predictions):.2%}"
+        )
+
+        print("\nClassification report:")
+        print(
+            classification_report(
+                y_test,
+                predictions,
+                labels=model.classes_,
+                zero_division=0
+            )
+        )
+
+        cm = confusion_matrix(
             y_test,
-            test_predictions,
-            labels=model.classes_,
-            zero_division=0,
+            predictions,
+            labels=model.classes_
         )
-    )
 
-    cm = confusion_matrix(
-        y_test,
-        test_predictions,
-        labels=model.classes_,
-    )
+        cm_title = "Random Forest - Test Confusion Matrix"
 
-    print("Confusion matrix:")
-    print(
-        pd.DataFrame(
-            cm,
-            index=model.classes_,
-            columns=model.classes_,
+    else:
+
+        print("\nWARNING:")
+        print(
+            "Dataset is too small for a reliable stratified "
+            "test split. Training on all available records."
         )
-    )
 
-    display = ConfusionMatrixDisplay(
+        model.fit(X, y)
+
+        predictions = model.predict(X)
+
+        print(
+            "Training accuracy (not test accuracy):",
+            f"{accuracy_score(y, predictions):.2%}"
+        )
+
+        print("\nTraining classification report:")
+        print(
+            classification_report(
+                y,
+                predictions,
+                labels=model.classes_,
+                zero_division=0
+            )
+        )
+
+        cm = confusion_matrix(
+            y,
+            predictions,
+            labels=model.classes_
+        )
+
+        cm_title = "Training Confusion Matrix"
+
+    # Save confusion matrix
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    ConfusionMatrixDisplay(
         confusion_matrix=cm,
-        display_labels=model.classes_,
+        display_labels=model.classes_
+    ).plot(
+        ax=ax,
+        values_format="d",
+        xticks_rotation=45,
+        colorbar=False
     )
 
-    display.plot(values_format="d", xticks_rotation=45)
-    plt.title("Random Forest - Test Confusion Matrix")
-    plt.tight_layout()
-    plt.savefig(CM_IMAGE, dpi=180, bbox_inches="tight")
-    plt.close()
+    ax.set_title(cm_title)
+    fig.tight_layout()
+    fig.savefig(CM_IMAGE, dpi=180, bbox_inches="tight")
+    plt.close(fig)
 
-    print("Confusion matrix saved:", CM_IMAGE)
-
-    # Save the trained model and feature order.
+    # Save model and feature order
     joblib.dump(
         {
             "model": model,
             "feature_names": FEATURE_NAMES,
-            "classes": list(model.classes_),
+            "classes": list(model.classes_)
         },
-        MODEL_FILE,
+        MODEL_FILE
     )
 
-    print("Model saved:", MODEL_FILE)
-
-    # Show feature importance.
+    # Feature importance
     importance = pd.DataFrame({
         "Feature": FEATURE_NAMES,
-        "Importance": model.feature_importances_,
-    }).sort_values("Importance", ascending=False)
+        "Importance": model.feature_importances_
+    }).sort_values(
+        "Importance",
+        ascending=False
+    )
 
-    print("\nSensor feature importance:")
+    print("\nFeature importance:")
     print(importance.to_string(index=False))
 
-    plt.figure(figsize=(9, 5))
-    plt.barh(
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    ax.barh(
         importance["Feature"],
-        importance["Importance"],
+        importance["Importance"]
     )
-    plt.xlabel("Importance")
-    plt.title("Random Forest - Sensor Feature Importance")
-    plt.gca().invert_yaxis()
-    plt.tight_layout()
-    plt.savefig(
+
+    ax.set_title("Random Forest - Feature Importance")
+    ax.set_xlabel("Importance")
+    ax.invert_yaxis()
+
+    fig.tight_layout()
+    fig.savefig(
         IMPORTANCE_IMAGE,
         dpi=180,
-        bbox_inches="tight",
+        bbox_inches="tight"
     )
-    plt.close()
+    plt.close(fig)
+
+    print("\nModel saved:", MODEL_FILE)
+    print("Confusion matrix saved:", CM_IMAGE)
+    print("Feature importance saved:", IMPORTANCE_IMAGE)
 
     return model
 
 
 # ==========================================================
-# STEP 5: GENERATE SENSOR READINGS
+# STEP 5: LOAD EXACTLY FIVE MACHINE READINGS
 # ==========================================================
 
-def generate_sensor_data():
+def generate_sensor_data(X):
 
-    # Example ranges are illustrative and should be calibrated
-    # to your actual machine and sensor operating limits.
-    return {
-        "temperature": round(random.uniform(50, 95), 2),
-        "pressure": round(random.uniform(4.0, 6.2), 2),
-        "vibration": round(random.uniform(0.1, 7.0), 2),
-        "current": round(random.uniform(5, 25), 2),
-        "rpm": random.randint(1400, 2200),
-    }
+    if len(X) < NUMBER_OF_MACHINES:
+        raise ValueError(
+            f"At least {NUMBER_OF_MACHINES} valid CSV records "
+            "are required."
+        )
+
+    # Use the first five valid records in CSV order.
+    machine_data = X.iloc[:NUMBER_OF_MACHINES].reset_index(
+        drop=True
+    )
+
+    return machine_data
 
 
 # ==========================================================
-# STEP 6: RULE-BASED REASONING
+# STEP 6: RULE-BASED OUTPUT
 # ==========================================================
 
 def evaluate_rules(reading):
@@ -336,7 +370,7 @@ def evaluate_rules(reading):
 
     for rule in sorted(
         RULES,
-        key=lambda item: item["priority"],
+        key=lambda item: item["priority"]
     ):
         if rule["condition"](reading):
             matching_rules.append(rule)
@@ -344,60 +378,54 @@ def evaluate_rules(reading):
     if not matching_rules:
         return {
             "condition": "NORMAL",
-            "rule": "NO_RULE_FIRED",
             "action": "CONTINUE_NORMAL",
             "severity": 0,
-            "priority": 999,
-            "matched_rules": [],
+            "matched_rules": []
         }
 
-    # Highest severity wins. Priority breaks severity ties.
-    worst_rule = max(
+    # Highest severity wins; priority breaks ties.
+    selected = max(
         matching_rules,
         key=lambda item: (
             item["severity"],
-            -item["priority"],
-        ),
+            -item["priority"]
+        )
     )
 
     return {
-        "condition": worst_rule["name"],
-        "rule": worst_rule["name"],
-        "action": worst_rule["action"],
-        "severity": worst_rule["severity"],
-        "priority": worst_rule["priority"],
+        "condition": selected["name"],
+        "action": selected["action"],
+        "severity": selected["severity"],
         "matched_rules": [
             rule["name"] for rule in matching_rules
-        ],
+        ]
     }
 
 
 # ==========================================================
-# STEP 7: MACHINE LEARNING PREDICTION
+# STEP 7: MACHINE LEARNING OUTPUT
 # ==========================================================
 
 def predict_with_model(model, reading):
 
     input_data = pd.DataFrame(
         [[reading[name] for name in FEATURE_NAMES]],
-        columns=FEATURE_NAMES,
+        columns=FEATURE_NAMES
     )
 
     prediction = model.predict(input_data)[0]
-
     probabilities = model.predict_proba(input_data)[0]
 
     probability_by_class = {
         str(label): float(probability)
         for label, probability in zip(
             model.classes_,
-            probabilities,
+            probabilities
         )
     }
 
-    confidence = max(probabilities)
+    confidence = float(max(probabilities))
 
-    # Confidence bands are operational thresholds, not guarantees.
     if confidence >= 0.80:
         confidence_level = "HIGH"
     elif confidence >= 0.60:
@@ -407,321 +435,225 @@ def predict_with_model(model, reading):
 
     return {
         "condition": str(prediction),
-        "confidence": float(confidence),
+        "confidence": confidence,
         "confidence_level": confidence_level,
-        "probabilities": probability_by_class,
+        "probabilities": probability_by_class
     }
 
 
 # ==========================================================
-# STEP 8: COMPARE RULE ENGINE WITH RANDOM FOREST
-# ==========================================================
-
-def compare_decisions(rule_result, model_result):
-
-    rule_condition = rule_result["condition"]
-    model_condition = model_result["condition"]
-
-    agrees = rule_condition == model_condition
-
-    if agrees:
-        comparison = "AGREEMENT"
-    else:
-        comparison = "DISAGREEMENT"
-
-    # Convert model prediction to an operational severity.
-    model_severity_map = {
-        "NORMAL": 0,
-        "OVERHEATING": 3,
-        "HIGH_VIBRATION": 2,
-        "MOTOR_OVERLOAD": 2,
-        "HIGH_PRESSURE": 2,
-    }
-
-    model_severity = model_severity_map.get(
-        model_condition,
-        0,
-    )
-
-    # Combined urgency is the maximum severity from either system.
-    combined_severity = max(
-        rule_result["severity"],
-        model_severity,
-    )
-
-    if combined_severity >= 3:
-        urgency = "CRITICAL"
-    elif combined_severity == 2:
-        urgency = "HIGH"
-    elif combined_severity == 1:
-        urgency = "MEDIUM"
-    else:
-        urgency = "NORMAL"
-
-    # Surface disagreement for human review.
-    if not agrees:
-        recommendation = (
-            "REVIEW REQUIRED: Rule and ML predictions differ. "
-            "Verify sensor readings and inspect the machine."
-        )
-    elif combined_severity >= 3:
-        recommendation = (
-            "Urgent fault indication. Follow approved safety "
-            "procedures and verify before intervention."
-        )
-    elif combined_severity > 0:
-        recommendation = (
-            "Inspect the machine and verify the fault indication."
-        )
-    else:
-        recommendation = (
-            "No fault detected by either method; continue monitoring."
-        )
-
-    return {
-        "comparison": comparison,
-        "agrees": agrees,
-        "model_severity": model_severity,
-        "combined_severity": combined_severity,
-        "urgency": urgency,
-        "recommendation": recommendation,
-    }
-
-
-# ==========================================================
-# STEP 9: LOG EACH MACHINE RESULT
-# ==========================================================
-
-def log_decision(
-    machine,
-    reading,
-    rule_result,
-    model_result,
-    comparison_result,
-):
-
-    with open(LOG_FILE, "a", encoding="utf-8") as file:
-
-        file.write(
-            f"\nTimestamp: {datetime.now().isoformat(timespec='seconds')}\n"
-            f"Machine: {machine}\n"
-            f"Sensor readings: {reading}\n"
-            f"Rule condition: {rule_result['condition']}\n"
-            f"Matched rules: {rule_result['matched_rules']}\n"
-            f"Rule action: {rule_result['action']}\n"
-            f"Rule severity: {rule_result['severity']}\n"
-            f"ML prediction: {model_result['condition']}\n"
-            f"ML confidence: {model_result['confidence']:.2%}\n"
-            f"ML confidence level: {model_result['confidence_level']}\n"
-            f"ML class probabilities: {model_result['probabilities']}\n"
-            f"Comparison: {comparison_result['comparison']}\n"
-            f"Urgency: {comparison_result['urgency']}\n"
-            f"Recommendation: {comparison_result['recommendation']}\n"
-            + "-" * 65 + "\n"
-        )
-
-
-# ==========================================================
-# STEP 10: PROCESS ONE MACHINE
+# STEP 8: PROCESS ONE MACHINE
 # ==========================================================
 
 def process_machine(machine, reading, model):
 
     rule_result = evaluate_rules(reading)
-    model_result = predict_with_model(model, reading)
 
-    comparison_result = compare_decisions(
-        rule_result,
-        model_result,
-    )
+    ml_result = predict_with_model(model, reading)
 
-    print("\n" + "=" * 65)
-    print(machine)
-    print("=" * 65)
+    # Preserve critical rule alarms.
+    if rule_result["severity"] >= 3:
+        urgency = "CRITICAL"
 
-    print("Sensor readings:")
-    for name, value in reading.items():
-        print(f"  {name}: {value}")
+        recommendation = (
+            "CRITICAL RULE ALARM: Follow approved safety "
+            "procedures and verify the machine condition."
+        )
 
-    print("\nRULE ENGINE")
-    print("Rule condition :", rule_result["condition"])
-    print("Matched rules  :", rule_result["matched_rules"])
-    print("Required action:", rule_result["action"])
-    print("Rule severity  :", rule_result["severity"])
+    elif rule_result["severity"] == 2:
+        urgency = "HIGH"
 
-    print("\nRANDOM FOREST")
-    print("Predicted state:", model_result["condition"])
-    print(
-        f"Prediction confidence: "
-        f"{model_result['confidence'] * 100:.2f}%"
-    )
-    print("Confidence level:", model_result["confidence_level"])
+        recommendation = (
+            "Inspect the machine and verify the fault indication."
+        )
 
-    print("\nClass probabilities:")
-    for label, probability in model_result["probabilities"].items():
-        print(f"  {label}: {probability * 100:.2f}%")
+    elif ml_result["condition"] != rule_result["condition"]:
+        urgency = "REVIEW"
 
-    print("\nRULE vs MODEL")
-    print("Comparison:", comparison_result["comparison"])
-    print("Urgency:", comparison_result["urgency"])
-    print("Recommendation:", comparison_result["recommendation"])
+        recommendation = (
+            "Rule and ML outputs differ. Verify sensor readings."
+        )
 
-    log_decision(
-        machine,
-        reading,
-        rule_result,
-        model_result,
-        comparison_result,
-    )
+    else:
+        urgency = "NORMAL"
 
-    return {
+        recommendation = (
+            "No fault detected by either method; continue monitoring."
+        )
+
+    result = {
         "machine": machine,
         "reading": reading,
         "rule_result": rule_result,
-        "model_result": model_result,
-        "comparison_result": comparison_result,
+        "ml_result": ml_result,
+        "urgency": urgency,
+        "recommendation": recommendation
     }
 
-
-# ==========================================================
-# STEP 11: MANUAL SENSOR INPUT
-# ==========================================================
-
-def get_manual_reading():
-
-    reading = {}
-
-    for feature in FEATURE_NAMES:
-        reading[feature] = float(
-            input(f"Enter {feature}: ")
+    # Detailed log
+    with open(LOG_FILE, "a", encoding="utf-8") as file:
+        file.write(
+            f"\nTimestamp: {datetime.now().isoformat(timespec='seconds')}\n"
+            f"Machine: {machine}\n"
+            f"Sensor readings: {reading}\n"
+            f"Rule output: {rule_result['condition']}\n"
+            f"Rule action: {rule_result['action']}\n"
+            f"ML output: {ml_result['condition']}\n"
+            f"ML confidence: {ml_result['confidence']:.2%}\n"
+            f"Urgency: {urgency}\n"
+            f"Recommendation: {recommendation}\n"
+            + "-" * 60 + "\n"
         )
 
-    if not np.isfinite(
-        [reading[name] for name in FEATURE_NAMES]
-    ).all():
-        raise ValueError("Sensor readings must be finite numbers.")
-
-    return reading
+    return result
 
 
 # ==========================================================
-# STEP 12: MAIN PROGRAM
+# STEP 9: MAIN PROGRAM
 # ==========================================================
 
 def main():
 
-    # Train the ML model first.
+    # Load the Day 2 CSV
     X, y = load_data()
+
+    # Train Random Forest using CSV sensor values and labels
     model = train_model(X, y)
+
+    # Select exactly five sensor records
+    machine_data = generate_sensor_data(X)
 
     results = []
 
-    print("\n" + "=" * 65)
-    print("RULE ENGINE + RANDOM FOREST PREDICTIVE MAINTENANCE")
-    print("=" * 65)
+    print("\n" + "=" * 60)
+    print("PROCESSING FIVE MACHINES")
+    print("=" * 60)
 
-    if SIMULATE_MACHINES:
+    for index, row in machine_data.iterrows():
 
-        machines = [
-            f"Machine {i}"
-            for i in range(1, NUMBER_OF_MACHINES + 1)
-        ]
+        reading = row.to_dict()
 
-        for machine in machines:
-            reading = generate_sensor_data()
+        machine_name = f"Machine {index + 1}"
 
-            result = process_machine(
-                machine,
-                reading,
-                model,
-            )
+        print(f"\nProcessing {machine_name}...")
 
-            results.append(result)
-            time.sleep(0.2)
-
-    else:
-
-        try:
-            reading = get_manual_reading()
-
-            result = process_machine(
-                "Manual Machine",
-                reading,
-                model,
-            )
-
-            results.append(result)
-
-        except ValueError as error:
-            print("Invalid input:", error)
-            return
-
-    # ------------------------------------------------------
-    # FINAL SUMMARY
-    # ------------------------------------------------------
-
-    print("\n" + "=" * 65)
-    print("FINAL MACHINE PRIORITY SUMMARY")
-    print("=" * 65)
-
-    # Sort by combined severity, then model confidence.
-    ordered_results = sorted(
-        results,
-        key=lambda item: (
-            item["comparison_result"]["combined_severity"],
-            item["model_result"]["confidence"],
-        ),
-        reverse=True,
-    )
-
-    for item in ordered_results:
-
-        machine = item["machine"]
-        rule_condition = item["rule_result"]["condition"]
-        model_condition = item["model_result"]["condition"]
-        comparison = item["comparison_result"]["comparison"]
-        urgency = item["comparison_result"]["urgency"]
-        confidence = item["model_result"]["confidence"]
-
-        print(
-            f"{machine} | "
-            f"Rule={rule_condition} | "
-            f"ML={model_condition} | "
-            f"Result={comparison} | "
-            f"Urgency={urgency} | "
-            f"ML Confidence={confidence:.1%}"
+        result = process_machine(
+            machine_name,
+            reading,
+            model
         )
 
-    # Identify the machine requiring the most urgent review.
-    most_urgent = ordered_results[0]
+        results.append(result)
 
-    print("\nTOP PRIORITY MACHINE:", most_urgent["machine"])
-    print(
-        "Recommended response:",
-        most_urgent["comparison_result"]["recommendation"],
-    )
+    # ======================================================
+    # FINAL OUTPUT: RULE-BASED VS MACHINE LEARNING
+    # ======================================================
 
-    disagreements = [
-        item for item in results
-        if not item["comparison_result"]["agrees"]
-    ]
-
-    print("\nDecision agreements:", len(results) - len(disagreements))
-    print("Decision disagreements:", len(disagreements))
-
-    if disagreements:
-        print("\nMachines requiring decision review:")
-        for item in disagreements:
-            print(
-                f"- {item['machine']}: "
-                f"Rule={item['rule_result']['condition']}, "
-                f"ML={item['model_result']['condition']}"
-            )
-
-    print("\nDetailed log saved to:", LOG_FILE)
-    print("Trained model saved to:", MODEL_FILE)
+    print("\n\n" + "=" * 65)
+    print("FINAL RESULT - FIVE MACHINES")
     print("=" * 65)
 
+    for result in results:
+
+        print(f"\n{result['machine']}")
+        print("-" * 40)
+
+        print(
+            "Rule-Based Output :",
+            result["rule_result"]["condition"]
+        )
+
+        print(
+            "ML Output         :",
+            result["ml_result"]["condition"]
+        )
+
+        print(
+            "ML Confidence     :",
+            f"{result['ml_result']['confidence']:.2%}"
+        )
+
+        print(
+            "Rule Action       :",
+            result["rule_result"]["action"]
+        )
+
+        print(
+            "Urgency           :",
+            result["urgency"]
+        )
+
+        print(
+            "Recommendation    :",
+            result["recommendation"]
+        )
+
+    # ======================================================
+    # FINAL COMPARISON TABLE
+    # ======================================================
+
+    print("\n" + "=" * 65)
+    print("FINAL RULE-BASED AND ML COMPARISON")
+    print("=" * 65)
+
+    summary = pd.DataFrame([
+        {
+            "Machine": result["machine"],
+            "Rule-Based Output":
+                result["rule_result"]["condition"],
+            "ML Output":
+                result["ml_result"]["condition"],
+            "Agreement":
+                result["rule_result"]["condition"]
+                == result["ml_result"]["condition"],
+            "Urgency": result["urgency"]
+        }
+        for result in results
+    ])
+
+    print(summary.to_string(index=False))
+
+    agreements = int(summary["Agreement"].sum())
+    disagreements = len(summary) - agreements
+
+    print("\nTotal machines:", len(results))
+    print("Agreements:", agreements)
+    print("Disagreements:", disagreements)
+
+    # Select the top priority machine.
+    priority_order = {
+        "CRITICAL": 3,
+        "HIGH": 2,
+        "REVIEW": 1,
+        "NORMAL": 0
+    }
+
+    top_priority = max(
+        results,
+        key=lambda result: (
+            priority_order[result["urgency"]],
+            result["rule_result"]["severity"],
+            result["ml_result"]["confidence"]
+        )
+    )
+
+    print("\nTOP PRIORITY:", top_priority["machine"])
+    print("Rule output:", top_priority["rule_result"]["condition"])
+    print("ML output:", top_priority["ml_result"]["condition"])
+    print("Urgency:", top_priority["urgency"])
+    print("Recommendation:", top_priority["recommendation"])
+
+    print("\nDetailed log:", LOG_FILE)
+    print("Model file:", MODEL_FILE)
+    print("Confusion matrix:", CM_IMAGE)
+    print("Feature importance:", IMPORTANCE_IMAGE)
+
+    print("=" * 65)
+
+
+# ==========================================================
+# PROGRAM ENTRY POINT
+# ==========================================================
 
 if __name__ == "__main__":
     main()
