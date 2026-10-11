@@ -1,0 +1,160 @@
+
+Timestamp: 2026-10-11T16:11:11
+Machine: Machine 1
+Sensor readings: {'temperature': 51.42, 'pressure': 4.98, 'vibration': 4.25, 'current': 24.27, 'rpm': 2130}
+Rule condition: MOTOR_OVERLOAD
+Matched rules: ['MOTOR_OVERLOAD']
+Rule action: CHECK_MOTOR
+Rule severity: 2
+ML prediction: MOTOR_OVERLOAD
+ML confidence: 65.00%
+ML confidence level: MEDIUM
+ML class probabilities: {'HIGH_VIBRATION': 0.30946043165467624, 'LOW_PRESSURE': 0.0, 'MOTOR_OVERLOAD': 0.65, 'NORMAL': 0.04053956834532374, 'OVERHEATING': 0.0}
+Comparison: AGREEMENT
+Urgency: HIGH
+Recommendation: Inspect the machine and verify the fault indication.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:11:11
+Machine: Machine 2
+Sensor readings: {'temperature': 71.85, 'pressure': 6.11, 'vibration': 3.7, 'current': 11.85, 'rpm': 1863}
+Rule condition: HIGH_PRESSURE
+Matched rules: ['HIGH_PRESSURE']
+Rule action: REDUCE_PRESSURE
+Rule severity: 2
+ML prediction: NORMAL
+ML confidence: 45.61%
+ML confidence level: LOW
+ML class probabilities: {'HIGH_VIBRATION': 0.45490582537048446, 'LOW_PRESSURE': 0.0037451305231511866, 'MOTOR_OVERLOAD': 0.0042176870748299325, 'NORMAL': 0.45605481635783535, 'OVERHEATING': 0.08107654067369906}
+Comparison: DISAGREEMENT
+Urgency: HIGH
+Recommendation: REVIEW REQUIRED: Rule and ML predictions differ. Verify sensor readings and inspect the machine.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:11:11
+Machine: Machine 3
+Sensor readings: {'temperature': 60.92, 'pressure': 5.17, 'vibration': 0.12, 'current': 18.17, 'rpm': 2032}
+Rule condition: MOTOR_OVERLOAD
+Matched rules: ['MOTOR_OVERLOAD']
+Rule action: CHECK_MOTOR
+Rule severity: 2
+ML prediction: MOTOR_OVERLOAD
+ML confidence: 93.61%
+ML confidence level: HIGH
+ML class probabilities: {'HIGH_VIBRATION': 0.0, 'LOW_PRESSURE': 0.0, 'MOTOR_OVERLOAD': 0.9360874504783463, 'NORMAL': 0.05960699396609812, 'OVERHEATING': 0.0043055555555555555}
+Comparison: AGREEMENT
+Urgency: HIGH
+Recommendation: Inspect the machine and verify the fault indication.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:11:12
+Machine: Machine 4
+Sensor readings: {'temperature': 51.87, 'pressure': 4.34, 'vibration': 5.58, 'current': 9.23, 'rpm': 2122}
+Rule condition: HIGH_VIBRATION
+Matched rules: ['HIGH_VIBRATION']
+Rule action: CHECK_MACHINE
+Rule severity: 2
+ML prediction: HIGH_VIBRATION
+ML confidence: 82.09%
+ML confidence level: HIGH
+ML class probabilities: {'HIGH_VIBRATION': 0.8208850070875033, 'LOW_PRESSURE': 0.0, 'MOTOR_OVERLOAD': 0.0, 'NORMAL': 0.17911499291249683, 'OVERHEATING': 0.0}
+Comparison: AGREEMENT
+Urgency: HIGH
+Recommendation: Inspect the machine and verify the fault indication.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:11:12
+Machine: Machine 5
+Sensor readings: {'temperature': 70.19, 'pressure': 4.16, 'vibration': 1.32, 'current': 20.92, 'rpm': 2066}
+Rule condition: MOTOR_OVERLOAD
+Matched rules: ['MOTOR_OVERLOAD']
+Rule action: CHECK_MOTOR
+Rule severity: 2
+ML prediction: MOTOR_OVERLOAD
+ML confidence: 91.81%
+ML confidence level: HIGH
+ML class probabilities: {'HIGH_VIBRATION': 0.0, 'LOW_PRESSURE': 0.0, 'MOTOR_OVERLOAD': 0.9181343396215587, 'NORMAL': 0.08186566037844127, 'OVERHEATING': 0.0}
+Comparison: AGREEMENT
+Urgency: HIGH
+Recommendation: Inspect the machine and verify the fault indication.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:12:46
+Machine: Machine 1
+Sensor readings: {'temperature': 51.22, 'pressure': 4.69, 'vibration': 2.89, 'current': 6.39, 'rpm': 1566}
+Rule condition: NORMAL
+Matched rules: []
+Rule action: CONTINUE_NORMAL
+Rule severity: 0
+ML prediction: NORMAL
+ML confidence: 88.27%
+ML confidence level: HIGH
+ML class probabilities: {'HIGH_VIBRATION': 0.039441403651647396, 'LOW_PRESSURE': 0.023945104631989986, 'MOTOR_OVERLOAD': 0.0, 'NORMAL': 0.8827482071421009, 'OVERHEATING': 0.05386528457426182}
+Comparison: AGREEMENT
+Urgency: NORMAL
+Recommendation: No fault detected by either method; continue monitoring.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:12:46
+Machine: Machine 2
+Sensor readings: {'temperature': 75.97, 'pressure': 4.43, 'vibration': 4.42, 'current': 19.99, 'rpm': 1485}
+Rule condition: MOTOR_OVERLOAD
+Matched rules: ['MOTOR_OVERLOAD']
+Rule action: CHECK_MOTOR
+Rule severity: 2
+ML prediction: MOTOR_OVERLOAD
+ML confidence: 54.34%
+ML confidence level: LOW
+ML class probabilities: {'HIGH_VIBRATION': 0.22, 'LOW_PRESSURE': 0.03202854793336116, 'MOTOR_OVERLOAD': 0.543406479507641, 'NORMAL': 0.011857152325801089, 'OVERHEATING': 0.1927078202331967}
+Comparison: AGREEMENT
+Urgency: HIGH
+Recommendation: Inspect the machine and verify the fault indication.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:12:46
+Machine: Machine 3
+Sensor readings: {'temperature': 73.8, 'pressure': 5.27, 'vibration': 5.87, 'current': 16.56, 'rpm': 2102}
+Rule condition: HIGH_VIBRATION
+Matched rules: ['HIGH_VIBRATION']
+Rule action: CHECK_MACHINE
+Rule severity: 2
+ML prediction: HIGH_VIBRATION
+ML confidence: 41.50%
+ML confidence level: LOW
+ML class probabilities: {'HIGH_VIBRATION': 0.415, 'LOW_PRESSURE': 0.00393191451783822, 'MOTOR_OVERLOAD': 0.3783465706330208, 'NORMAL': 0.04381371783791197, 'OVERHEATING': 0.1589077970112291}
+Comparison: AGREEMENT
+Urgency: HIGH
+Recommendation: Inspect the machine and verify the fault indication.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:12:46
+Machine: Machine 4
+Sensor readings: {'temperature': 85.48, 'pressure': 4.15, 'vibration': 1.32, 'current': 5.4, 'rpm': 1639}
+Rule condition: OVERHEATING
+Matched rules: ['OVERHEATING']
+Rule action: STOP_MACHINE
+Rule severity: 3
+ML prediction: OVERHEATING
+ML confidence: 77.98%
+ML confidence level: MEDIUM
+ML class probabilities: {'HIGH_VIBRATION': 0.0, 'LOW_PRESSURE': 0.03982256357086862, 'MOTOR_OVERLOAD': 0.031139457749373888, 'NORMAL': 0.1492769206519195, 'OVERHEATING': 0.7797610580278382}
+Comparison: AGREEMENT
+Urgency: CRITICAL
+Recommendation: Urgent fault indication. Follow approved safety procedures and verify before intervention.
+-----------------------------------------------------------------
+
+Timestamp: 2026-10-11T16:12:47
+Machine: Machine 5
+Sensor readings: {'temperature': 68.15, 'pressure': 4.48, 'vibration': 5.65, 'current': 11.82, 'rpm': 1763}
+Rule condition: HIGH_VIBRATION
+Matched rules: ['HIGH_VIBRATION']
+Rule action: CHECK_MACHINE
+Rule severity: 2
+ML prediction: HIGH_VIBRATION
+ML confidence: 88.67%
+ML confidence level: HIGH
+ML class probabilities: {'HIGH_VIBRATION': 0.8867478095615844, 'LOW_PRESSURE': 0.0, 'MOTOR_OVERLOAD': 0.0, 'NORMAL': 0.11325219043841565, 'OVERHEATING': 0.0}
+Comparison: AGREEMENT
+Urgency: HIGH
+Recommendation: Inspect the machine and verify the fault indication.
+-----------------------------------------------------------------
