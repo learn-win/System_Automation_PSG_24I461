@@ -1,0 +1,40 @@
+|--- vibration <= 4.600
+|   |--- pressure <= 3.725
+|   |   |--- class: 1.0
+|   |--- pressure >  3.725
+|   |   |--- rpm <= 1726.000
+|   |   |   |--- current <= 17.145
+|   |   |   |   |--- vibration <= 3.030
+|   |   |   |   |   |--- class: 3.0
+|   |   |   |   |--- vibration >  3.030
+|   |   |   |   |   |--- pressure <= 4.690
+|   |   |   |   |   |   |--- current <= 13.240
+|   |   |   |   |   |   |   |--- class: 4.0
+|   |   |   |   |   |   |--- current >  13.240
+|   |   |   |   |   |   |   |--- class: 4.0
+|   |   |   |   |   |--- pressure >  4.690
+|   |   |   |   |   |   |--- vibration <= 3.305
+|   |   |   |   |   |   |   |--- class: 4.0
+|   |   |   |   |   |   |--- vibration >  3.305
+|   |   |   |   |   |   |   |--- class: 3.0
+|   |   |   |--- current >  17.145
+|   |   |   |   |--- pressure <= 4.305
+|   |   |   |   |   |--- class: 2.0
+|   |   |   |   |--- pressure >  4.305
+|   |   |   |   |   |--- class: 2.0
+|   |   |--- rpm >  1726.000
+|   |   |   |--- temperature <= 74.140
+|   |   |   |   |--- current <= 17.675
+|   |   |   |   |   |--- class: 3.0
+|   |   |   |   |--- current >  17.675
+|   |   |   |   |   |--- vibration <= 1.630
+|   |   |   |   |   |   |--- class: 2.0
+|   |   |   |   |   |--- vibration >  1.630
+|   |   |   |   |   |   |--- class: 2.0
+|   |   |   |--- temperature >  74.140
+|   |   |   |   |--- vibration <= 1.275
+|   |   |   |   |   |--- class: 4.0
+|   |   |   |   |--- vibration >  1.275
+|   |   |   |   |   |--- class: 4.0
+|--- vibration >  4.600
+|   |--- class: 0.0

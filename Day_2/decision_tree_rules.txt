@@ -1,0 +1,16 @@
+|--- current <= 16.075
+|   |--- pressure <= 3.895
+|   |   |--- class: LOW_PRESSURE
+|   |--- pressure >  3.895
+|   |   |--- temperature <= 72.500
+|   |   |   |--- vibration <= 3.660
+|   |   |   |   |--- temperature <= 70.320
+|   |   |   |   |   |--- class: NORMAL
+|   |   |   |   |--- temperature >  70.320
+|   |   |   |   |   |--- class: NORMAL
+|   |   |   |--- vibration >  3.660
+|   |   |   |   |--- class: HIGH_VIBRATION
+|   |   |--- temperature >  72.500
+|   |   |   |--- class: OVERHEATING
+|--- current >  16.075
+|   |--- class: MOTOR_OVERLOAD
