@@ -1,0 +1,38 @@
+Robotic Arm Fleet Decision Report
+Generated: 2026-10-14T17:33:12
+================================================================
+
+Arm_1  ->  [ SAFE ]
+   Why        : All signals nominal; no model, note or physics warning
+   Wear (ML)  : shoulder:HEALTHY(100%), elbow:HEALTHY(100%), wrist:HEALTHY(100%)
+
+Arm_2  ->  [ MONITOR ]
+   Why        : Early warning: model sees wear at wrist (confidence 100%)
+   Wear (ML)  : shoulder:HEALTHY(100%), elbow:HEALTHY(90%), wrist:WEAR(100%)
+
+Arm_3  ->  [ SCHEDULE_MAINTENANCE ]
+   Why        : Model predicts CRITICAL wear at elbow (confidence 100%) and technician notes corroborate
+   Wear (ML)  : shoulder:HEALTHY(100%), elbow:CRITICAL(100%), wrist:HEALTHY(99%)
+   Tech notes : 2026-10-09  Arm 3 - operator reports an intermittent grinding noise from the elbow joint during fast pick-and-place moves. Gets louder as the shift goes on.
+
+Arm_4  ->  [ ** EMERGENCY_STOP ** ]
+   Why        : Hard safety limit crossed: shoulder temperature=92 exceeds hard limit 85
+   Wear (ML)  : shoulder:WEAR(62%), elbow:HEALTHY(100%), wrist:HEALTHY(100%)
+
+Arm_5  ->  [ SCHEDULE_MAINTENANCE ]
+   Why        : Sensor spoof suspected - torque cannot be trusted, physical inspection required: elbow is hot (78 C) and vibrating (7 mm/s) yet torque reads only 45 Nm - torque channel is physically inconsistent (possible spoof)
+   Wear (ML)  : shoulder:HEALTHY(100%), elbow:CRITICAL(54%), wrist:HEALTHY(100%)
+   Tech notes : 2026-10-12  Arm 5 - torque readings on the elbow look suspiciously flat lately, almost too steady, and the joint runs warm to the touch. Double-check the sensor wiring.
+
+Arm_6  ->  [ MONITOR ]
+   Why        : Early warning: technician note flags a concern
+   Wear (ML)  : shoulder:HEALTHY(100%), elbow:HEALTHY(100%), wrist:HEALTHY(100%)
+   Tech notes : 2026-10-11  Arm 6 - faint squeak at the wrist when the arm reaches full extension. Not urgent but worth keeping an eye on.
+
+  Arm             Decision
+Arm_1                 SAFE
+Arm_2              MONITOR
+Arm_3 SCHEDULE_MAINTENANCE
+Arm_4       EMERGENCY_STOP
+Arm_5 SCHEDULE_MAINTENANCE
+Arm_6              MONITOR

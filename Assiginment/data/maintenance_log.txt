@@ -1,0 +1,14 @@
+# Assembly Line - Robotic Arm Maintenance Log (free text)
+# Technicians jot down anything they notice. Not structured. Some notes
+# are about the arms, some are housekeeping noise that the system must ignore.
+
+2026-10-09  Arm 3 - operator reports an intermittent grinding noise from the elbow joint during fast pick-and-place moves. Gets louder as the shift goes on.
+2026-10-09  Repainted the yellow safety railing near cell 4. Looks much better.
+2026-10-10  Arm 1 - routine inspection completed, everything nominal, no issues found.
+2026-10-10  Coffee machine in the break room is still broken, maintenance ticket raised with facilities.
+2026-10-11  Arm 6 - faint squeak at the wrist when the arm reaches full extension. Not urgent but worth keeping an eye on.
+2026-10-11  Ordered a new box of nitrile gloves and replacement HVAC filters for the workshop.
+2026-10-12  Arm 5 - torque readings on the elbow look suspiciously flat lately, almost too steady, and the joint runs warm to the touch. Double-check the sensor wiring.
+2026-10-12  Fluorescent light above the Arm 2 station was flickering, swapped the tube out.
+2026-10-13  Arm 4 - no concerns noted this shift, cycle times normal.
+2026-10-13  Reminder: fire-drill scheduled for Friday, keep the east aisle clear.
